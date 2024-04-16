@@ -2,7 +2,7 @@ name: ci-build
 on:
   push:
     branches:
-      - main
+      - '**'
 
 permissions:
   contents: read
@@ -30,3 +30,42 @@ jobs:
 
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress
+
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Lint PHP files
+        run: composer phpcs
+
+  security:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Security scan
+        run: composer security:check
+
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run PHPUnit
+        run: php bin/phpunit
+
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+#      - name: Validate composer.json and composer.lock
+#        run: composer validate
+
+      - name: Deploy to production
+        run: echo "Deploying to production"
